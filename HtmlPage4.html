@@ -8,28 +8,53 @@
 <body>
    
 
-   
-
-    <video id="video" controls></video>
-
+    <div class="container">
+        <video id="video" preload="auto" controls>
+            <source src="videos/VTC-Cond-M01L03T01T01P01.mp4" type="video/mp4" />
+            <source src="videos/VTC-Cond-M01L03T01T01P01.ogv" type="video/ogg" />
+        </video>
+    </div>
+    <script src="Preloader.js"></script>
     <script>
-        // Later on, after some condition has been met, set video source to the
-        // preloaded video URL.
-        video.src = 'videos/VTC-Cond-M01L03T01T01P01.mp4';
-        video.play().then(_ => {
-            //console.log("AA");
-            //alert("AA");
-            // If preloaded` video URL was already cached, playback started immediately.
-        });
+        Preloader('#video');
 
-        video.addEventListener("progress", function () {
-            // When buffer is 1 whole video is buffered
-            console.log(Math.round(video.buffered.end(0)) / Math.round(video.seekable.end(0)));
-            if (Math.round(video.buffered.end(0)) / Math.round(video.seekable.end(0)) === 1) {
-                // Entire video is downloaded
-            }
-        }, false);
+
+
+        function Preloader(v) {
+
+            window.addEventListener('load', function () {
+                var video = document.querySelector(v);
+                var container = video.parentNode;
+                var preloader = document.createElement('div');
+                var vWidth = window.getComputedStyle(video, null).getPropertyValue('width');
+                var vHeight = window.getComputedStyle(video, null).getPropertyValue('height');
+
+                container.style.position = 'relative';
+                video.style.position = 'absolute';
+                preloader.style.position = 'absolute';
+                preloader.style.width = vWidth;
+                preloader.style.height = vHeight;
+                preloader.style.backgroundColor = '#000';
+                preloader.innerHTML = '<img src="images/preloader.gif">';
+
+                container.appendChild(preloader);
+
+                function checkLoad() {
+                    if (video.readyState === 4) {
+                        container.removeChild(preloader);
+                    } else {
+                        setTimeout(checkLoad, 100);
+                    }
+                }
+
+                checkLoad();
+
+            });
+
+        }
     </script>
+
+    
  
 </body>
 </html>
